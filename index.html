@@ -306,6 +306,21 @@ button { font-family: var(--fb); cursor: pointer; }
 .sk-fill { height: 100%; background: var(--acc); border-radius: 2px; transition: width 1s cubic-bezier(.4,0,.2,1); }
 .sk-pct  { font-size: .85rem; font-weight: 600; color: var(--muted); flex-shrink: 0; }
 
+.skill-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
+
+.sk-ico {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-size: 1.5rem;
+}
+
 /* ── EXPERIENCE PAGE ───────────── */
 .xp-list { display: flex; flex-direction: column; }
 .xp {
@@ -537,7 +552,7 @@ button { font-family: var(--fb); cursor: pointer; }
       <div class="about-layout">
         <div class="about-card">
             <div class="about-card-top">
-              <img src="foto ta.jpg" alt="Profile Photo" class="profile-photo">
+              <img src="./images/foto ta.jpg" alt="Profile Photo" class="profile-photo">
             </div>
           <div class="about-card-bottom">
             <div>
@@ -586,7 +601,10 @@ button { font-family: var(--fb); cursor: pointer; }
       <transition name="ft" mode="out-in">
         <div class="sk-grid" :key="activeTab">
           <div class="sk" v-for="s in curSkills" :key="s.name">
-            <div class="sk-ico">{{ s.icon }}</div>
+            <div class="sk-ico">
+              <img v-if="s.iconImg" :src="s.iconImg" :alt="s.name" class="skill-icon" @error="handleImageError">
+              <span v-else>{{ s.iconEmoji }}</span>
+            </div>
             <div class="sk-body">
               <div class="sk-name">{{ s.name }}</div>
               <div class="sk-bar"><div class="sk-fill" :style="{width:s.lv+'%'}"></div></div>
@@ -796,22 +814,34 @@ createApp({
     ];
     const allSkills = {
       fe: [
-        {iconImg: 'Vue.png', iconEmoji: '⚡', name:'Vue.js', lv:88},{icon:'🌐',name:'JavaScript',lv:85},
-        {icon:'🎨',name:'HTML / CSS',lv:90},{icon:'🔷',name:'Laravel (PHP)',lv:75},
-        {icon:'🔗',name:'REST API',lv:82},{icon:'🐍',name:'Django',lv:72},
-        {icon:'📊',name:'Dashboard UI',lv:80},{icon:'✏️',name:'UI/UX Design',lv:76},
+        {iconImg: './images/Vue.png', iconEmoji: '⚡', name:'Vue.js', lv:88},
+        {iconImg: './images/js.png', iconEmoji: '🌐', name:'JavaScript', lv:85},
+        {iconImg: './images/html.png', iconEmoji: '🎨', name:'HTML / CSS', lv:90},
+        {iconImg: './images/php.png', iconEmoji: '🔷', name:'Laravel (PHP)', lv:75},
+        {iconImg: './images/restapi.png', iconEmoji: '🔗', name:'REST API', lv:82},
+        {iconImg: './images/django.png', iconEmoji: '🐍', name:'Django', lv:72},
+        {iconImg: './images/dashboard.png', iconEmoji: '📊', name:'Dashboard UI', lv:80},
+        {iconImg: './images/uiux.png', iconEmoji: '✏️', name:'UI/UX Design', lv:76},
       ],
       ds: [
-        {icon:'🐍',name:'Python',lv:86},{icon:'🐼',name:'Pandas',lv:83},
-        {icon:'🔢',name:'NumPy',lv:80},{icon:'🤖',name:'Scikit-learn',lv:78},
-        {icon:'🧠',name:'TensorFlow / PyTorch',lv:65},{icon:'💬',name:'NLP',lv:68},
-        {icon:'🗄️',name:'SQL',lv:83},{icon:'📈',name:'Tableau',lv:70},
+        {iconImg: './images/python.png', iconEmoji: '🐍', name:'Python', lv:86},
+        {iconImg: './images/pandas.png', iconEmoji: '🐼', name:'Pandas', lv:83},
+        {iconImg: './images/numpy.png', iconEmoji: '🔢', name:'NumPy', lv:80},
+        {iconImg: './images/scikitlearn.png', iconEmoji: '🤖', name:'Scikit-learn', lv:78},
+        {iconImg: './images/tensorflow.png', iconEmoji: '🧠', name:'TensorFlow / PyTorch', lv:65},
+        {iconImg: './images/nlp.png', iconEmoji: '💬', name:'NLP', lv:68},
+        {iconImg: './images/postgre.png', iconEmoji: '🗄️', name:'SQL', lv:83},
+        {iconImg: './images/tableu.png', iconEmoji: '📈', name:'Tableau', lv:70},
       ],
       it: [
-        {icon:'🖥️',name:'Hardware Troubleshooting',lv:80},{icon:'🪟',name:'Windows OS',lv:86},
-        {icon:'🐧',name:'Linux Basics',lv:70},{icon:'🌐',name:'LAN & Networking',lv:78},
-        {icon:'🔌',name:'IP Configuration',lv:76},{icon:'🛡️',name:'IT Security',lv:72},
-        {icon:'☁️',name:'Cloud Computing',lv:68},{icon:'⚙️',name:'Sys. Admin',lv:74},
+        {iconImg: './images/hardware.png', iconEmoji: '🖥️', name:'Hardware Troubleshooting', lv:80},
+        {iconImg: './images/windows11.png', iconEmoji: '🪟', name:'Windows OS', lv:86},
+        {iconImg: './images/linux.png', iconEmoji: '🐧', name:'Linux Basics', lv:70},
+        {iconImg: './images/lan.png', iconEmoji: '🌐', name:'LAN & Networking', lv:78},
+        {iconImg: './images/ipconfig.png', iconEmoji: '🔌', name:'IP Configuration', lv:76},
+        {iconImg: './images/itsecurity.png', iconEmoji: '🛡️', name:'IT Security', lv:72},
+        {iconImg: './images/AWS.png', iconEmoji: '☁️', name:'Cloud Computing', lv:68},
+        {iconImg: './images/sys.png', iconEmoji: '⚙️', name:'Sys. Admin', lv:74},
       ],
     };
     const curSkills = computed(() => allSkills[activeTab.value]);

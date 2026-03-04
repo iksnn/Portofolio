@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Noor Ichsan Hermawan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+<style>
+/* ── TOKENS ────────────────────── */
+:root {
+  --bg:    #F9F8F5;
+  --bg2:   #F2F0EB;
+  --bg3:   #E8E5DE;
+  --ink:   #18181A;
+  --ink2:  #3D3C3A;
+  --muted: #8C8880;
+  --line:  #E2DFD8;
+  --acc:   #E85530;
+  --white: #FFFFFF;
+  --fh: 'Bricolage Grotesque', sans-serif;
+  --fb: 'Outfit', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--fb); -webkit-font-smoothing: antialiased;
+}
+ul { list-style: none; }
+a { color: inherit; text-decoration: none; }
+button { font-family: var(--fb); cursor: pointer; }
+
+/* ── FULLSCREEN SCROLLER ───────── */
+#scroller {
+  position: fixed; inset: 0;
+  will-change: transform;
+  transition: transform 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.page {
+  height: 100vh; width: 100%;
+  display: flex; flex-direction: column;
+  position: relative; overflow: hidden;
+}
+.page-inner {
+  flex: 1; display: flex; flex-direction: column;
+  justify-content: center;
+  max-width: 1560px; width: 100%; margin: 0 auto;
+  padding: 72px 4rem 2rem;
+}
+
+#p-hero     { background: var(--bg); }
+#p-about    { background: var(--white); border-top: 1px solid var(--line); }
+#p-skills   { background: var(--bg); border-top: 1px solid var(--line); }
+#p-exp      { background: var(--white); border-top: 1px solid var(--line); }
+#p-projects { background: var(--bg); border-top: 1px solid var(--line); }
+#p-contact  { background: var(--ink); }
+
+/* ── NAV ───────────────────────── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 300;
+  background: rgba(249,248,245,.92);
+  backdrop-filter: blur(16px) saturate(180%);
+  border-bottom: 1px solid var(--line);
+}
+.nav-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  height: 68px; max-width: 1560px; margin: 0 auto; padding: 0 4rem;
+}
+.nav-logo {
+  font-family: var(--fh); font-weight: 800; font-size: 1.25rem;
+  letter-spacing: -.025em;
+}
+.nav-logo span { color: var(--acc); }
+.nav-links { display: flex; gap: 2.25rem; align-items: center; }
+.nav-links a {
+  font-size: .85rem; font-weight: 500; color: var(--ink2);
+  transition: color .2s; position: relative; padding-bottom: 2px;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:0; left:0; right:0;
+  height:1.5px; background:var(--acc);
+  transform:scaleX(0); transform-origin:left; transition:transform .25s;
+}
+.nav-links a:hover { color: var(--ink); }
+.nav-links a:hover::after { transform: scaleX(1); }
+
+/* LANG TOGGLE */
+.lang-toggle {
+  display: flex; align-items: center;
+  background: var(--bg2); border-radius: 100px;
+  padding: 3px; gap: 2px; border: 1px solid var(--line);
+}
+.lang-btn {
+  font-size: .72rem; font-weight: 700; letter-spacing: .06em;
+  padding: .4rem .9rem; border-radius: 100px; border: none;
+  background: transparent; color: var(--muted); transition: all .22s;
+}
+.lang-btn.on { background: var(--white); color: var(--ink); box-shadow: 0 1px 6px rgba(0,0,0,.1); }
+
+.nav-right { display: flex; align-items: center; gap: 1.25rem; }
+.nav-badge {
+  display: flex; align-items: center; gap: .45rem;
+  font-size: .78rem; font-weight: 500; color: var(--muted);
+}
+.dot-g {
+  width: 7px; height: 7px; background: #22c55e;
+  border-radius: 50%; flex-shrink: 0;
+  animation: pg 2.2s ease infinite;
+}
+@keyframes pg {
+  0%,100%{box-shadow:0 0 0 0 rgba(34,197,94,.45)}
+  50%{box-shadow:0 0 0 6px rgba(34,197,94,0)}
+}
+.hbg { display:none; flex-direction:column; gap:5px; background:none; border:none; padding:4px; }
+.hbg span { width:22px; height:2px; background:var(--ink); border-radius:2px; display:block; transition:all .3s; }
+.hbg.open span:first-child  { transform:rotate(45deg) translate(5px,5px); }
+.hbg.open span:nth-child(2) { opacity:0; }
+.hbg.open span:last-child   { transform:rotate(-45deg) translate(5px,-5px); }
+.mob-menu {
+  display:none; flex-direction:column;
+  background:var(--white); border-top:1px solid var(--line);
+  padding:1.5rem 2rem 2rem; gap:1.25rem;
+}
+.mob-menu.open { display:flex; }
+.mob-menu a { font-size:.9rem; font-weight:500; color:var(--ink2); padding:.4rem 0; border-bottom:1px solid var(--line); }
+
+/* ── DOT NAV ───────────────────── */
+.dot-nav {
+  position: fixed; right: 2rem; top: 50%; transform: translateY(-50%);
+  display: flex; flex-direction: column; gap: .75rem; z-index: 200;
+}
+.dn {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--line); border: 1.5px solid var(--bg3);
+  cursor: pointer; transition: all .35s cubic-bezier(.4,0,.2,1); position: relative;
+}
+.dn.active { background: var(--acc); border-color: var(--acc); transform: scale(1.45); }
+.dn:hover:not(.active) { background: var(--muted); border-color: var(--muted); transform: scale(1.2); }
+.dn-tip {
+  position: absolute; right: calc(100% + 12px); top: 50%;
+  transform: translateY(-50%);
+  background: var(--ink); color: var(--white);
+  font-size: .68rem; font-weight: 600; letter-spacing: .06em;
+  padding: .3rem .8rem; border-radius: 6px; white-space: nowrap;
+  opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.dn:hover .dn-tip { opacity: 1; }
+
+/* ── PROGRESS BAR ──────────────── */
+.progress-bar {
+  position: fixed; left: 0; top: 0; bottom: 0; width: 3px; z-index: 200;
+  background: var(--line);
+}
+.progress-fill {
+  width: 100%; background: var(--acc); border-radius: 0 2px 2px 0;
+  transition: height 0.9s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+/* ── SECTION COUNTER ───────────── */
+.section-counter {
+  position: fixed; bottom: 2rem; left: 4rem; z-index: 200;
+  font-family: var(--fh); font-weight: 700;
+  display: flex; align-items: baseline; gap: .35rem;
+}
+.sc-cur { font-size: 1.75rem; color: var(--ink); line-height: 1; }
+.sc-sep { font-size: .85rem; color: var(--muted); }
+.sc-tot { font-size: .9rem; color: var(--muted); }
+.counter-light .sc-cur { color: var(--white); }
+.counter-light .sc-sep, .counter-light .sc-tot { color: rgba(255,255,255,.3); }
+
+/* ── TYPE SCALE (1080p optimized) ─ */
+.label {
+  font-size: .78rem; font-weight: 600; letter-spacing: .15em;
+  text-transform: uppercase; color: var(--muted); margin-bottom: .85rem;
+}
+.h-hero {
+  font-family: var(--fh); font-weight: 800;
+  font-size: clamp(4rem, 7.5vw, 8rem);
+  line-height: .93; letter-spacing: -.035em; margin-bottom: 1.75rem;
+}
+.h-hero em { font-style: italic; color: var(--acc); }
+.h-sec {
+  font-family: var(--fh); font-weight: 700;
+  font-size: clamp(2.2rem, 3.2vw, 3.4rem);
+  line-height: 1.05; letter-spacing: -.025em; margin-bottom: 2rem;
+}
+.h-sec em { font-style: italic; color: var(--acc); }
+
+/* ── BUTTONS ───────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: .55rem;
+  font-size: .9rem; font-weight: 600;
+  padding: .85rem 1.85rem; border-radius: 100px;
+  transition: all .22s ease; border: 1.5px solid transparent;
+  white-space: nowrap;
+}
+.btn-p { background: var(--ink); color: var(--white); border-color: var(--ink); }
+.btn-p:hover { background: var(--acc); border-color: var(--acc); transform: translateY(-2px); box-shadow: 0 6px 22px rgba(232,85,48,.28); }
+.btn-o { background: transparent; color: var(--ink); border-color: var(--line); }
+.btn-o:hover { border-color: var(--ink); transform: translateY(-2px); }
+
+/* ── HERO PAGE ─────────────────── */
+.hero-layout {
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 4rem; align-items: center;
+}
+.hero-eyebrow { display: flex; gap: .65rem; flex-wrap: wrap; margin-bottom: 2rem; }
+.eyebrow-pill {
+  background: var(--bg2); border-radius: 100px;
+  padding: .4rem 1.1rem; border: 1px solid var(--line);
+  font-size: .78rem; font-weight: 600; letter-spacing: .05em;
+  color: var(--ink2); display: flex; align-items: center; gap: .45rem;
+}
+.hero-desc { max-width: 620px; font-size: 1.08rem; line-height: 1.82; color: var(--ink2); margin-bottom: 2.25rem; }
+.hero-desc strong { color: var(--ink); font-weight: 600; }
+.hero-btns { display: flex; gap: .85rem; flex-wrap: wrap; }
+
+.hero-badges { display: flex; flex-direction: column; gap: .7rem; }
+.hb {
+  display: flex; align-items: center; gap: .7rem;
+  background: var(--white); border: 1px solid var(--line);
+  padding: .85rem 1.5rem; border-radius: 12px;
+  font-size: .9rem; font-weight: 600; color: var(--ink2);
+  box-shadow: 0 1px 8px rgba(0,0,0,.05);
+  transition: all .25s; white-space: nowrap;
+}
+.hb:hover { border-color: var(--acc); color: var(--acc); transform: translateX(-6px); }
+
+.scroll-hint {
+  position: absolute; bottom: 2rem; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  animation: bob 2.5s ease infinite;
+}
+.scroll-hint svg { opacity: .4; }
+@keyframes bob {
+  0%,100%{ transform: translateX(-50%) translateY(0); }
+  50%{ transform: translateX(-50%) translateY(7px); }
+}
+
+/* ── ABOUT PAGE ────────────────── */
+.about-layout {
+  display: grid; grid-template-columns: 1fr 1.3fr;
+  gap: 5rem; align-items: center;
+}
+.about-card {
+  background: var(--bg2); border: 1px solid var(--line);
+  border-radius: 24px; overflow: hidden;
+}
+.about-card-top {
+  height: 300px; display: flex; align-items: center; justify-content: center;
+  font-size: 8rem;
+  background: linear-gradient(140deg, var(--bg2), var(--bg3));
+}
+.about-card-bottom {
+  padding: 1.5rem 2rem; border-top: 1px solid var(--line);
+  display: flex; justify-content: space-between; align-items: center;
+  background: rgba(255,255,255,.6);
+}
+.acb-name { font-family: var(--fh); font-weight: 700; font-size: 1.1rem; }
+.acb-sub  { font-size: .82rem; color: var(--muted); margin-top: .15rem; }
+.acb-gpa  { font-family: var(--fh); font-weight: 800; font-size: 2rem; color: var(--acc); letter-spacing: -.03em; }
+
+.about-right p { font-size: 1rem; line-height: 1.85; color: var(--ink2); margin-bottom: 1rem; }
+.about-right p strong { color: var(--ink); font-weight: 600; }
+.stats-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-top: 2rem; }
+.stat {
+  background: var(--bg); border: 1px solid var(--line); border-radius: 14px;
+  padding: 1.35rem 1rem; text-align: center; transition: all .25s;
+}
+.stat:hover { border-color: var(--acc); box-shadow: 0 4px 18px rgba(232,85,48,.1); }
+.stat-n { font-family: var(--fh); font-weight: 800; font-size: 2.2rem; line-height: 1; }
+.stat-n sup { font-size: .85rem; color: var(--acc); }
+.stat-l { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-top: .4rem; }
+
+/* ── SKILLS PAGE ───────────────── */
+.skills-top {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem; margin-bottom: 2rem; flex-wrap: wrap;
+}
+.tab-row { display: flex; background: var(--bg2); border-radius: 100px; padding: 4px; gap: 2px; border: 1px solid var(--line); }
+.tab {
+  font-size: .8rem; font-weight: 600; letter-spacing: .04em;
+  padding: .6rem 1.5rem; border-radius: 100px; border: none;
+  background: transparent; color: var(--muted); transition: all .2s;
+}
+.tab.on { background: var(--white); color: var(--ink); box-shadow: 0 1px 6px rgba(0,0,0,.1); }
+
+.sk-grid {
+  display: grid; grid-template-columns: repeat(2,1fr);
+  gap: 1px; background: var(--line);
+  border: 1px solid var(--line); border-radius: 16px; overflow: hidden;
+}
+.sk {
+  background: var(--white); padding: 1.2rem 1.6rem;
+  display: flex; align-items: center; gap: 1.1rem; transition: background .18s;
+}
+.sk:hover { background: var(--bg); }
+.sk-ico  { font-size: 1.5rem; flex-shrink: 0; }
+.sk-body { flex: 1; min-width: 0; }
+.sk-name { font-size: .92rem; font-weight: 600; margin-bottom: .38rem; }
+.sk-bar  { height: 3px; background: var(--bg2); border-radius: 2px; overflow: hidden; }
+.sk-fill { height: 100%; background: var(--acc); border-radius: 2px; transition: width 1s cubic-bezier(.4,0,.2,1); }
+.sk-pct  { font-size: .85rem; font-weight: 600; color: var(--muted); flex-shrink: 0; }
+
+/* ── EXPERIENCE PAGE ───────────── */
+.xp-list { display: flex; flex-direction: column; }
+.xp {
+  display: grid; grid-template-columns: 210px 1fr;
+  gap: 2.5rem; padding: 1.75rem 0; border-top: 1px solid var(--line);
+  transition: all .22s; border-radius: 10px;
+}
+.xp:last-child { border-bottom: 1px solid var(--line); }
+.xp:hover { background: var(--bg); padding-left: 1.25rem; padding-right: 1.25rem; margin: 0 -1.25rem; }
+.xp-date { font-size: .82rem; font-weight: 500; color: var(--muted); line-height: 1.55; }
+.xp-chip { display: inline-block; margin-top: .55rem; font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: .28rem .75rem; border-radius: 100px; background: var(--bg2); color: var(--muted); }
+.xp-company { font-family: var(--fh); font-weight: 700; font-size: 1.25rem; letter-spacing: -.015em; margin-bottom: .2rem; }
+.xp-role { font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: .95rem; }
+.xp-pts { display: flex; flex-direction: column; gap: .45rem; }
+.xp-pts li { font-size: .92rem; color: var(--ink2); padding-left: 1.1rem; position: relative; line-height: 1.7; }
+.xp-pts li::before { content:''; position:absolute; left:0; top:.68em; width:5px; height:5px; background:var(--acc); border-radius:50%; }
+
+/* ── PROJECTS PAGE ─────────────── */
+.pj-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.25rem; }
+.pj {
+  border-radius: 16px; overflow: hidden;
+  background: var(--white); border: 1px solid var(--line);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+.pj:hover { transform: translateY(-6px); box-shadow: 0 16px 44px rgba(0,0,0,.11); }
+.pj-top {
+  height: 155px; display: flex; align-items: center;
+  justify-content: center; font-size: 3rem;
+}
+.pj-top.fe { background: linear-gradient(135deg,#e8f5e0,#d4f0c0); }
+.pj-top.ds { background: linear-gradient(135deg,#fef3e2,#fde4b8); }
+.pj-top.it { background: linear-gradient(135deg,#fce8e2,#fad0c4); }
+.pj-ico { transition: transform .3s; }
+.pj:hover .pj-ico { transform: scale(1.12); }
+.pj-body { padding: 1.25rem 1.5rem 1.5rem; }
+.pj-track { font-size: .66rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; margin-bottom: .45rem; }
+.pj-track.fe { color: #4d8c1e; }
+.pj-track.ds { color: #9a6200; }
+.pj-track.it { color: #b03a1a; }
+.pj-name { font-family: var(--fh); font-weight: 700; font-size: 1.05rem; letter-spacing: -.01em; margin-bottom: .45rem; line-height: 1.25; }
+.pj-desc { font-size: .84rem; color: var(--muted); line-height: 1.65; margin-bottom: 1rem; }
+.pj-tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+.pj-tag { font-size: .64rem; font-weight: 600; padding: .22rem .6rem; border-radius: 6px; background: var(--bg2); color: var(--ink2); border: 1px solid var(--line); }
+
+/* ── CONTACT PAGE ──────────────── */
+.ct-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: start; }
+.ct-left .label { color: rgba(255,255,255,.35); }
+.ct-h { font-family: var(--fh); font-weight: 800; font-size: clamp(2.4rem,3.5vw,3.6rem); line-height: 1.04; letter-spacing: -.03em; color: var(--white); margin-bottom: 1.1rem; }
+.ct-h em { font-style: italic; color: var(--acc); }
+.ct-sub { font-size: .97rem; line-height: 1.8; color: rgba(255,255,255,.5); margin-bottom: 2rem; }
+.ct-links { display: flex; flex-direction: column; gap: .7rem; }
+.clink {
+  display: flex; align-items: center; gap: 1rem;
+  background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px; padding: 1rem 1.35rem; transition: all .25s;
+}
+.clink:hover { background: rgba(255,255,255,.1); border-color: rgba(255,255,255,.2); transform: translateX(6px); }
+.clink-ico { font-size: 1.15rem; }
+.clink-lbl { font-size: .65rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.3); margin-bottom: .12rem; }
+.clink-val { font-size: .9rem; font-weight: 500; color: rgba(255,255,255,.82); }
+
+.cf { display: flex; flex-direction: column; gap: .9rem; }
+.f2 { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+.fg { display: flex; flex-direction: column; gap: .4rem; }
+.flbl { font-size: .7rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.35); }
+.fi, .fta {
+  background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; padding: .85rem 1.2rem;
+  font-size: .92rem; font-family: var(--fb); color: var(--white); outline: none;
+  transition: border-color .2s, background .2s; resize: none;
+}
+.fi::placeholder, .fta::placeholder { color: rgba(255,255,255,.22); }
+.fi:focus, .fta:focus { border-color: var(--acc); background: rgba(255,255,255,.1); }
+.btn-send {
+  background: var(--acc); color: var(--white); font-family: var(--fb);
+  font-size: .88rem; font-weight: 700; letter-spacing: .04em;
+  padding: .95rem; border: none; border-radius: 100px;
+  transition: all .22s; margin-top: .15rem;
+}
+.btn-send:hover { background: #d44420; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(232,85,48,.38); }
+.btn-send.done { background: #22c55e; }
+
+.footer-bar {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 1.1rem 4rem;
+  display: flex; justify-content: space-between; align-items: center;
+  border-top: 1px solid rgba(255,255,255,.07);
+  max-width: 100%;
+}
+.footer-bar p { font-size: .75rem; color: rgba(255,255,255,.25); }
+.footer-bar b { color: rgba(255,255,255,.45); }
+
+/* ── TRANSITIONS ───────────────── */
+.ft-enter-active, .ft-leave-active { transition: all .28s ease; }
+.ft-enter-from { opacity:0; transform:translateY(8px); }
+.ft-leave-to   { opacity:0; transform:translateY(-8px); }
+
+/* ── RESPONSIVE ────────────────── */
+@media (max-width: 1280px) {
+  .page-inner { max-width: 100%; padding: 72px 3rem 2rem; }
+  .nav-inner  { max-width: 100%; padding: 0 3rem; }
+  .footer-bar { padding: 1rem 3rem; }
+  .section-counter { left: 3rem; }
+}
+@media (max-width: 1023px) {
+  .hero-badges { display: none; }
+  .pj-grid { grid-template-columns: repeat(2,1fr); }
+  .about-layout { grid-template-columns: 1fr; gap: 2rem; }
+  .about-card-top { height: 200px; font-size: 5rem; }
+  .ct-layout { grid-template-columns: 1fr; gap: 2rem; }
+}
+@media (max-width: 767px) {
+  html, body { overflow: auto; height: auto; }
+  #scroller { position: static; transform: none !important; transition: none !important; }
+  .page { height: auto; min-height: 100svh; overflow: visible; padding-bottom: 3rem; }
+  .page-inner { padding: 85px 1.25rem 2rem; justify-content: flex-start; }
+  .dot-nav, .progress-bar, .section-counter, .scroll-hint { display: none; }
+  .nav-links, .nav-badge { display: none; }
+  .hbg { display: flex; }
+  .nav-inner { padding: 0 1.25rem; }
+  .sk-grid { grid-template-columns: 1fr; }
+  .pj-grid { grid-template-columns: 1fr; }
+  .xp { grid-template-columns: 1fr; gap: .4rem; }
+  .f2 { grid-template-columns: 1fr; }
+  .footer-bar { position: relative; padding: 1rem 1.25rem; }
+  .tab-row { width: 100%; }
+  .tab { flex: 1; text-align: center; }
+  .h-hero { font-size: 2.8rem; }
+  .h-sec  { font-size: 2rem; }
+}
+@media (max-width: 479px) {
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .hero-btns { flex-direction: column; }
+  .hero-btns .btn { justify-content: center; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ── NAV ──────────────────────── -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="#" class="nav-logo" @click.prevent="goTo(0)">Ichsan<span>.</span></a>
+    <ul class="nav-links">
+      <li v-for="(s,i) in sections" :key="s.id">
+        <a href="#" @click.prevent="goTo(i)">{{ t(s.nav) }}</a>
+      </li>
+    </ul>
+    <div class="nav-right">
+      <!-- LANGUAGE TOGGLE -->
+      <div class="lang-toggle">
+        <button class="lang-btn" :class="{on: lang==='en'}" @click="lang='en'">EN</button>
+        <button class="lang-btn" :class="{on: lang==='id'}" @click="lang='id'">ID</button>
+      </div>
+      <div class="nav-badge"><div class="dot-g"></div>{{ t('openToWork') }}</div>
+      <button class="hbg" :class="{open:mob}" @click="mob=!mob" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+  <div class="mob-menu" :class="{open:mob}" @click="mob=false">
+    <a v-for="(s,i) in sections" :key="s.id" href="#" @click.prevent="goTo(i)">{{ t(s.nav) }}</a>
+  </div>
+</nav>
+
+<!-- ── PROGRESS BAR ─────────────── -->
+<div class="progress-bar">
+  <div class="progress-fill" :style="{height: progressPct+'%'}"></div>
+</div>
+
+<!-- ── DOT NAV ──────────────────── -->
+<nav class="dot-nav">
+  <div v-for="(s,i) in sections" :key="s.id"
+    class="dn" :class="{active: cur===i}" @click="goTo(i)">
+    <span class="dn-tip">{{ t(s.nav) }}</span>
+  </div>
+</nav>
+
+<!-- ── COUNTER ───────────────────── -->
+<div class="section-counter" :class="{'counter-light': cur===5}">
+  <span class="sc-cur">0{{ cur+1 }}</span>
+  <span class="sc-sep">/</span>
+  <span class="sc-tot">0{{ sections.length }}</span>
+</div>
+
+<!-- ── PAGES ────────────────────── -->
+<div id="scroller" ref="scroller">
+
+  <!-- 01 HERO -->
+  <section class="page" id="p-hero">
+    <div class="page-inner">
+      <div class="hero-layout">
+        <div>
+          <div class="hero-eyebrow">
+            <div class="eyebrow-pill"><div class="dot-g"></div> {{ t('available') }}</div>
+            <div class="eyebrow-pill">Jakarta, Indonesia</div>
+          </div>
+          <h1 class="h-hero">
+            {{ t('heroLine1') }}<br>
+            {{ t('heroLine2') }} <em>{{ t('heroLine3') }}</em><br>
+            {{ t('heroLine4') }}
+          </h1>
+          <p class="hero-desc" v-html="t('heroDesc')"></p>
+          <div class="hero-btns">
+            <a href="#" class="btn btn-p" @click.prevent="goTo(5)">{{ t('btnContact') }}</a>
+            <a href="#" class="btn btn-o" @click.prevent="goTo(4)">{{ t('btnWork') }}</a>
+          </div>
+        </div>
+        <div class="hero-badges">
+          <div class="hb">⬡ &nbsp;Frontend Development</div>
+          <div class="hb">◈ &nbsp;Data Science</div>
+          <div class="hb">◉ &nbsp;IT Support</div>
+          <div class="hb" style="color:var(--muted);font-size:.85rem">Vue.js · Django · Python · SQL</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-hint">
+      <svg width="16" height="16" viewBox="0 0 14 14" fill="none">
+        <path d="M7 1v12M1 7l6 6 6-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      scroll
+    </div>
+  </section>
+
+  <!-- 02 ABOUT -->
+  <section class="page" id="p-about">
+    <div class="page-inner">
+      <div class="about-layout">
+        <div class="about-card">
+          <div class="about-card-top">🧑‍💻</div>
+          <div class="about-card-bottom">
+            <div>
+              <div class="acb-name">Noor Ichsan Hermawan</div>
+              <div class="acb-sub">📍 Jakarta · Universitas Budi Luhur</div>
+            </div>
+            <div class="acb-gpa">3.74</div>
+          </div>
+        </div>
+        <div class="about-right">
+          <p class="label">{{ t('navAbout') }}</p>
+          <h2 class="h-sec" v-html="t('aboutTitle')"></h2>
+          <p v-html="t('aboutP1')"></p>
+          <p v-html="t('aboutP2')"></p>
+          <div class="stats-row">
+            <div class="stat">
+              <div class="stat-n">3.74<sup>/4</sup></div>
+              <div class="stat-l">GPA</div>
+            </div>
+            <div class="stat">
+              <div class="stat-n">3<sup>+</sup></div>
+              <div class="stat-l">{{ t('statExp') }}</div>
+            </div>
+            <div class="stat">
+              <div class="stat-n">6<sup>+</sup></div>
+              <div class="stat-l">{{ t('statProj') }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 SKILLS -->
+  <section class="page" id="p-skills">
+    <div class="page-inner">
+      <div class="skills-top">
+        <div>
+          <p class="label" style="margin-bottom:.5rem">{{ t('navSkills') }}</p>
+          <h2 class="h-sec" style="margin:0" v-html="t('skillsTitle')"></h2>
+        </div>
+        <div class="tab-row">
+          <button v-for="tb in tabs" :key="tb.id" class="tab" :class="{on: activeTab===tb.id}" @click="activeTab=tb.id">{{ tb.label }}</button>
+        </div>
+      </div>
+      <transition name="ft" mode="out-in">
+        <div class="sk-grid" :key="activeTab">
+          <div class="sk" v-for="s in curSkills" :key="s.name">
+            <div class="sk-ico">{{ s.icon }}</div>
+            <div class="sk-body">
+              <div class="sk-name">{{ s.name }}</div>
+              <div class="sk-bar"><div class="sk-fill" :style="{width:s.lv+'%'}"></div></div>
+            </div>
+            <div class="sk-pct">{{ s.lv }}%</div>
+          </div>
+        </div>
+      </transition>
+    </div>
+  </section>
+
+  <!-- 04 EXPERIENCE -->
+  <section class="page" id="p-exp">
+    <div class="page-inner">
+      <p class="label" style="margin-bottom:.5rem">{{ t('navExp') }}</p>
+      <h2 class="h-sec" v-html="t('expTitle')"></h2>
+      <div class="xp-list">
+        <div class="xp" v-for="(e,i) in currentExperiences" :key="i">
+          <div>
+            <div class="xp-date">{{ e.date }}</div>
+            <div class="xp-chip">{{ e.type }}</div>
+          </div>
+          <div>
+            <div class="xp-company">{{ e.company }}</div>
+            <div class="xp-role">{{ e.role }}</div>
+            <ul class="xp-pts">
+              <li v-for="p in e.pts" :key="p">{{ p }}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 PROJECTS -->
+  <section class="page" id="p-projects">
+    <div class="page-inner">
+      <p class="label" style="margin-bottom:.5rem">{{ t('navProjects') }}</p>
+      <h2 class="h-sec" v-html="t('projectsTitle')"></h2>
+      <div class="pj-grid">
+        <div class="pj" v-for="p in currentProjects" :key="p.name">
+          <div class="pj-top" :class="p.track"><span class="pj-ico">{{ p.icon }}</span></div>
+          <div class="pj-body">
+            <div class="pj-track" :class="p.track">{{ p.trackLabel }}</div>
+            <div class="pj-name">{{ p.name }}</div>
+            <div class="pj-desc">{{ p.desc }}</div>
+            <div class="pj-tags">
+              <span class="pj-tag" v-for="tg in p.tags" :key="tg">{{ tg }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 06 CONTACT -->
+  <section class="page" id="p-contact">
+    <div class="page-inner">
+      <div class="ct-layout">
+        <div class="ct-left">
+          <p class="label">{{ t('navContact') }}</p>
+          <h2 class="ct-h" v-html="t('contactTitle')"></h2>
+          <p class="ct-sub">{{ t('contactSub') }}</p>
+          <div class="ct-links">
+            <a href="mailto:ichsan0333@gmail.com" class="clink">
+              <span class="clink-ico">✉️</span>
+              <div><div class="clink-lbl">Email</div><div class="clink-val">ichsan0333@gmail.com</div></div>
+            </a>
+            <a href="https://wa.me/6285731202786" target="_blank" class="clink">
+              <span class="clink-ico">📱</span>
+              <div><div class="clink-lbl">WhatsApp</div><div class="clink-val">+62 857-3120-2786</div></div>
+            </a>
+            <a href="https://www.linkedin.com/in/nichsan01/" target="_blank" class="clink">
+              <span class="clink-ico">💼</span>
+              <div><div class="clink-lbl">LinkedIn</div><div class="clink-val">linkedin.com/in/nichsan01</div></div>
+            </a>
+          </div>
+        </div>
+        <div class="cf">
+          <div class="f2">
+            <div class="fg"><label class="flbl">{{ t('formName') }}</label><input class="fi" :placeholder="t('formNamePh')" v-model="form.name"/></div>
+            <div class="fg"><label class="flbl">{{ t('formEmail') }}</label><input class="fi" type="email" placeholder="your@email.com" v-model="form.email"/></div>
+          </div>
+          <div class="fg"><label class="flbl">{{ t('formSubject') }}</label><input class="fi" :placeholder="t('formSubjectPh')" v-model="form.subject"/></div>
+          <div class="fg"><label class="flbl">{{ t('formMessage') }}</label><textarea class="fta" rows="4" :placeholder="t('formMessagePh')" v-model="form.msg"></textarea></div>
+          <button class="btn-send" :class="{done:sent}" @click="send">{{ sent ? t('formSent') : t('formBtn') }}</button>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bar">
+      <p>© 2025 <b>Noor Ichsan Hermawan</b></p>
+      <p>{{ t('builtWith') }}</p>
+    </div>
+  </section>
+
+</div><!-- #scroller -->
+</div><!-- #app -->
+
+<script>
+const { createApp, ref, computed, onMounted } = Vue;
+
+createApp({
+  setup() {
+    const scroller  = ref(null);
+    const cur       = ref(0);
+    const mob       = ref(false);
+    const activeTab = ref('fe');
+    const sent      = ref(false);
+    const lang      = ref('en');
+    const form      = ref({ name:'', email:'', subject:'', msg:'' });
+
+    // ── I18N ──────────────────────────────────────────────
+    const i18n = {
+      en: {
+        openToWork: 'Open to work',
+        available:  'Available for opportunities',
+        heroLine1: 'Frontend Dev',
+        heroLine2: '& Data',
+        heroLine3: 'Engineer',
+        heroLine4: '— Jakarta.',
+        heroDesc: 'Hi, I\'m <strong>Noor Ichsan Hermawan</strong> — a fresh Informatics Engineering graduate passionate about building great web interfaces, working with data, and keeping IT systems running smoothly.',
+        btnContact: 'Get in touch →',
+        btnWork:    'See my work',
+        navHome:     'Home',
+        navAbout:    'About',
+        navSkills:   'Skills',
+        navExp:      'Experience',
+        navProjects: 'Projects',
+        navContact:  'Contact',
+        aboutTitle: 'Building things<br>people <em>enjoy</em> using.',
+        aboutP1: 'I\'m an <strong>Informatics Engineering</strong> graduate from Universitas Budi Luhur (GPA 3.74/4.00) with expertise in three domains: Frontend Development, Data Science, and IT Support.',
+        aboutP2: 'My most significant experience was an internship at the <strong>Ministry of Finance of Indonesia (DJPK)</strong>, where I built a Django–Vue.js web system, an OCR automation tool, and financial dashboards across provinces. I\'m also a <strong>Kampus Merdeka MSIB</strong> alumni in Data Science.',
+        statExp: 'Internships',
+        statProj: 'Projects',
+        skillsTitle: 'My <em>skill</em> set.',
+        expTitle: "Where I've <em>worked.</em>",
+        projectsTitle: "Projects I've <em>built.</em>",
+        contactTitle: "Let's work<br><em>together.</em>",
+        contactSub: "Interested in collaborating, have a job opportunity, or just want to chat about technology? Reach out anytime — I'm always open to new opportunities.",
+        formName: 'Name', formNamePh: 'Your name',
+        formEmail: 'Email',
+        formSubject: 'Subject', formSubjectPh: "What's this about?",
+        formMessage: 'Message', formMessagePh: 'Tell me more...',
+        formBtn: 'Send message →',
+        formSent: '✓ Sent!',
+        builtWith: 'Built with Vue.js · Jakarta',
+      },
+      id: {
+        openToWork: 'Buka untuk kerja',
+        available:  'Tersedia untuk peluang',
+        heroLine1: 'Frontend Dev',
+        heroLine2: '& Data',
+        heroLine3: 'Engineer',
+        heroLine4: '— Jakarta.',
+        heroDesc: 'Halo, saya <strong>Noor Ichsan Hermawan</strong> — lulusan Teknik Informatika yang passionate dalam membangun antarmuka web berkualitas, mengolah data, dan menjaga sistem IT berjalan optimal.',
+        btnContact: 'Hubungi saya →',
+        btnWork:    'Lihat karya',
+        navHome:     'Beranda',
+        navAbout:    'Tentang',
+        navSkills:   'Keahlian',
+        navExp:      'Pengalaman',
+        navProjects: 'Proyek',
+        navContact:  'Kontak',
+        aboutTitle: 'Membangun hal yang<br>orang <em>nikmati.</em>',
+        aboutP1: 'Saya lulusan <strong>Teknik Informatika</strong> Universitas Budi Luhur (IPK 3.74/4.00) dengan keahlian di tiga bidang: Frontend Development, Data Science, dan IT Support.',
+        aboutP2: 'Pengalaman terbesar saya adalah magang di <strong>Kementerian Keuangan RI — DJPK</strong>, membangun sistem web Django–Vue.js, OCR automation tool, dan dashboard keuangan antar-provinsi. Saya juga alumni <strong>Kampus Merdeka MSIB</strong> bidang Data Science.',
+        statExp: 'Pengalaman',
+        statProj: 'Proyek',
+        skillsTitle: 'Keahlian <em>saya.</em>',
+        expTitle: 'Tempat saya <em>bekerja.</em>',
+        projectsTitle: 'Proyek yang saya <em>bangun.</em>',
+        contactTitle: "Mari bekerja<br><em>bersama.</em>",
+        contactSub: 'Tertarik berkolaborasi, punya peluang kerja, atau sekadar ngobrol soal teknologi? Hubungi saya kapan saja — selalu terbuka untuk kesempatan baru.',
+        formName: 'Nama', formNamePh: 'Nama Anda',
+        formEmail: 'Email',
+        formSubject: 'Subjek', formSubjectPh: 'Ini tentang apa?',
+        formMessage: 'Pesan', formMessagePh: 'Ceritakan lebih lanjut...',
+        formBtn: 'Kirim pesan →',
+        formSent: '✓ Terkirim!',
+        builtWith: 'Dibangun dengan Vue.js · Jakarta',
+      },
+    };
+
+    function t(key) {
+      return i18n[lang.value][key] || i18n['en'][key] || key;
+    }
+
+    // ── SECTIONS ──────────────────────────────────────────
+    const sections = [
+      { id:'p-hero',     nav:'navHome' },
+      { id:'p-about',    nav:'navAbout' },
+      { id:'p-skills',   nav:'navSkills' },
+      { id:'p-exp',      nav:'navExp' },
+      { id:'p-projects', nav:'navProjects' },
+      { id:'p-contact',  nav:'navContact' },
+    ];
+
+    const progressPct = computed(() =>
+      sections.length <= 1 ? 0 : (cur.value / (sections.length - 1)) * 100
+    );
+
+    // ── SKILLS ────────────────────────────────────────────
+    const tabs = [
+      { id:'fe', label:'Frontend' },
+      { id:'ds', label:'Data Science' },
+      { id:'it', label:'IT Support' },
+    ];
+    const allSkills = {
+      fe: [
+        {icon:'⚡',name:'Vue.js',lv:88},{icon:'🌐',name:'JavaScript',lv:85},
+        {icon:'🎨',name:'HTML / CSS',lv:90},{icon:'🔷',name:'Laravel (PHP)',lv:75},
+        {icon:'🔗',name:'REST API',lv:82},{icon:'🐍',name:'Django',lv:72},
+        {icon:'📊',name:'Dashboard UI',lv:80},{icon:'✏️',name:'UI/UX Design',lv:76},
+      ],
+      ds: [
+        {icon:'🐍',name:'Python',lv:86},{icon:'🐼',name:'Pandas',lv:83},
+        {icon:'🔢',name:'NumPy',lv:80},{icon:'🤖',name:'Scikit-learn',lv:78},
+        {icon:'🧠',name:'TensorFlow / PyTorch',lv:65},{icon:'💬',name:'NLP',lv:68},
+        {icon:'🗄️',name:'SQL',lv:83},{icon:'📈',name:'Tableau',lv:70},
+      ],
+      it: [
+        {icon:'🖥️',name:'Hardware Troubleshooting',lv:80},{icon:'🪟',name:'Windows OS',lv:86},
+        {icon:'🐧',name:'Linux Basics',lv:70},{icon:'🌐',name:'LAN & Networking',lv:78},
+        {icon:'🔌',name:'IP Configuration',lv:76},{icon:'🛡️',name:'IT Security',lv:72},
+        {icon:'☁️',name:'Cloud Computing',lv:68},{icon:'⚙️',name:'Sys. Admin',lv:74},
+      ],
+    };
+    const curSkills = computed(() => allSkills[activeTab.value]);
+
+    // ── EXPERIENCE (bilingual) ─────────────────────────────
+    const experiences = {
+      en: [
+        { date:'Mar 2025 – Jul 2025', type:'Internship',
+          company:'Ministry of Finance RI — DJPK',
+          role:'Data Science Intern · Frontend Focused',
+          pts:['Built Vue.js frontend for a sectoral data web application across provinces.',
+               'Engineered interactive dashboards for regional budget & realization visualization.',
+               'Implemented an OCR-based interface for evaluating regional regulations (Perda/Perkada).',
+               'Django–Vue.js architecture with real-time activity logging.'] },
+        { date:'Sep 2024 – Dec 2024', type:'MSIB',
+          company:'Celerates Acceleration Program',
+          role:'Kampus Merdeka · Data Science',
+          pts:['Deep Learning, NLP, Machine Learning & Statistical Learning Theory.',
+               'Served as ML Engineer in final project: built & optimized NLP text classification model.',
+               'Stack: Python, Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch.'] },
+        { date:'Aug 2023 – Nov 2023', type:'Internship',
+          company:'TSA Kominfo × Rakamin',
+          role:'IT Engineer Intern · Training Program',
+          pts:['Cloud Computing, IT Security, Web & Mobile Development (PHP, Java).',
+               'Developed UI components & REST API integration for a financial application.',
+               'Full-stack e-commerce platform with Laravel, PHP & MySQL.'] },
+      ],
+      id: [
+        { date:'Mar 2025 – Jul 2025', type:'Magang',
+          company:'Kementerian Keuangan RI — DJPK',
+          role:'Data Science Intern · Frontend Focused',
+          pts:['Membangun frontend Vue.js untuk aplikasi data sektoral antar-provinsi.',
+               'Dashboard interaktif: visualisasi anggaran & realisasi keuangan regional.',
+               'Antarmuka OCR untuk evaluasi peraturan daerah (Perda/Perkada).',
+               'Arsitektur Django–Vue.js dengan real-time activity logging.'] },
+        { date:'Sep 2024 – Des 2024', type:'MSIB',
+          company:'Celerates Acceleration Program',
+          role:'Kampus Merdeka · Data Science',
+          pts:['Deep Learning, NLP, Machine Learning, dan Statistical Learning Theory.',
+               'ML Engineer di proyek akhir: membangun & optimasi model klasifikasi teks NLP.',
+               'Stack: Python, Pandas, NumPy, Scikit-learn, TensorFlow, PyTorch.'] },
+        { date:'Agu 2023 – Nov 2023', type:'Magang',
+          company:'TSA Kominfo × Rakamin',
+          role:'IT Engineer Intern · Training Program',
+          pts:['Cloud Computing, IT Security, Web & Mobile Development (PHP, Java).',
+               'Pengembangan UI components & integrasi REST API untuk aplikasi keuangan.',
+               'Full-stack e-commerce platform dengan Laravel, PHP & MySQL.'] },
+      ],
+    };
+    const currentExperiences = computed(() => experiences[lang.value]);
+
+    // ── PROJECTS (bilingual) ───────────────────────────────
+    const projects = {
+      en: [
+        { track:'fe', trackLabel:'Frontend Dev', icon:'🖥️', name:'Internal Web Platform — DJPK',
+          desc:'Django–Vue.js system for regulation uploads, activity logging & regional data dashboards.',
+          tags:['Vue.js','Django','REST API','Dashboard'] },
+        { track:'ds', trackLabel:'Data Science', icon:'🔍', name:'OCR Automation Tool',
+          desc:'Python OCR system to automate text extraction from regional regulatory documents.',
+          tags:['Python','OCR','Automation','Pandas'] },
+        { track:'ds', trackLabel:'Data Science', icon:'🧠', name:'NLP Text Classification',
+          desc:'ML model for text classification — Kampus Merdeka final project using TensorFlow.',
+          tags:['Python','NLP','TensorFlow','Scikit-learn'] },
+        { track:'fe', trackLabel:'Frontend Dev', icon:'🏝️', name:'Bali Contractor Website',
+          desc:'Luxury company profile, SEO-optimized with Core Web Vitals & REST API inquiry form.',
+          tags:['HTML5','CSS3','JavaScript','SEO'] },
+        { track:'fe', trackLabel:'Frontend Dev', icon:'🛒', name:'E-Commerce Platform',
+          desc:'Full-stack e-commerce with Laravel: product management, DB integration & testing.',
+          tags:['Laravel','PHP','MySQL','Bootstrap'] },
+        { track:'it', trackLabel:'IT Support', icon:'🔧', name:'IT Infrastructure Setup',
+          desc:'Local server config, backend-frontend environment, and system debugging at Kemenkeu.',
+          tags:['Linux','Networking','Django','DevOps'] },
+      ],
+      id: [
+        { track:'fe', trackLabel:'Frontend Dev', icon:'🖥️', name:'Internal Web Platform — DJPK',
+          desc:'Sistem Django–Vue.js: unggah regulasi, activity logging, & dashboard data regional.',
+          tags:['Vue.js','Django','REST API','Dashboard'] },
+        { track:'ds', trackLabel:'Data Science', icon:'🔍', name:'OCR Automation Tool',
+          desc:'Sistem OCR Python untuk otomasi ekstraksi teks dokumen regulasi daerah.',
+          tags:['Python','OCR','Automation','Pandas'] },
+        { track:'ds', trackLabel:'Data Science', icon:'🧠', name:'NLP Text Classification',
+          desc:'Model ML klasifikasi teks — proyek akhir Kampus Merdeka dengan TensorFlow.',
+          tags:['Python','NLP','TensorFlow','Scikit-learn'] },
+        { track:'fe', trackLabel:'Frontend Dev', icon:'🏝️', name:'Bali Contractor Website',
+          desc:'Company profile mewah, SEO-optimized & Core Web Vitals, REST API inquiry.',
+          tags:['HTML5','CSS3','JavaScript','SEO'] },
+        { track:'fe', trackLabel:'Frontend Dev', icon:'🛒', name:'E-Commerce Platform',
+          desc:'Full-stack e-commerce Laravel: product management, DB integration & testing.',
+          tags:['Laravel','PHP','MySQL','Bootstrap'] },
+        { track:'it', trackLabel:'IT Support', icon:'🔧', name:'IT Infrastructure Setup',
+          desc:'Konfigurasi server lokal, environment backend-frontend, debugging Kemenkeu.',
+          tags:['Linux','Networking','Django','DevOps'] },
+      ],
+    };
+    const currentProjects = computed(() => projects[lang.value]);
+
+    // ── CONTACT FORM ───────────────────────────────────────
+    function send() {
+      if (!form.value.name || !form.value.email) return;
+      const s = encodeURIComponent(form.value.subject || 'Portfolio Contact');
+      const b = encodeURIComponent(`Name: ${form.value.name}\nEmail: ${form.value.email}\n\n${form.value.msg}`);
+      window.open(`mailto:ichsan0333@gmail.com?subject=${s}&body=${b}`);
+      sent.value = true;
+      setTimeout(() => sent.value = false, 3000);
+    }
+
+    // ── SMOOTH SCROLL ENGINE ───────────────────────────────
+    let isAnimating = false;
+    let touchStartY = 0;
+    const TOTAL = sections.length;
+
+    function goTo(idx) {
+      if (idx < 0 || idx >= TOTAL) return;
+      mob.value = false;
+      if (window.innerWidth <= 767) {
+        const el = document.getElementById(sections[idx].id);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+        cur.value = idx;
+        return;
+      }
+      if (isAnimating) return;
+      isAnimating = true;
+      cur.value = idx;
+      const el = scroller.value;
+      if (el) el.style.transform = `translateY(${-idx * window.innerHeight}px)`;
+      setTimeout(() => { isAnimating = false; }, 960);
+    }
+
+    function next() { if (cur.value < TOTAL - 1) goTo(cur.value + 1); }
+    function prev() { if (cur.value > 0) goTo(cur.value - 1); }
+
+    onMounted(() => {
+      const isMob = () => window.innerWidth <= 767;
+
+      // wheel
+      let wheelAccum = 0, wheelTimer = null;
+      window.addEventListener('wheel', (e) => {
+        if (isMob()) return;
+        e.preventDefault();
+        if (isAnimating) return;
+        wheelAccum += e.deltaY;
+        clearTimeout(wheelTimer);
+        wheelTimer = setTimeout(() => { wheelAccum = 0; }, 200);
+        if (Math.abs(wheelAccum) > 60) {
+          wheelAccum > 0 ? next() : prev();
+          wheelAccum = 0;
+        }
+      }, { passive: false });
+
+      // keyboard
+      window.addEventListener('keydown', (e) => {
+        if (isMob()) return;
+        if (['ArrowDown','PageDown'].includes(e.key) || e.key === ' ') { e.preventDefault(); next(); }
+        if (['ArrowUp','PageUp'].includes(e.key)) { e.preventDefault(); prev(); }
+      });
+
+      // touch
+      window.addEventListener('touchstart', (e) => { if (!isMob()) touchStartY = e.touches[0].clientY; }, { passive: true });
+      window.addEventListener('touchend',   (e) => {
+        if (isMob()) return;
+        const diff = touchStartY - e.changedTouches[0].clientY;
+        if (Math.abs(diff) > 40) { diff > 0 ? next() : prev(); }
+      }, { passive: true });
+
+      // resize
+      window.addEventListener('resize', () => {
+        if (isMob()) return;
+        const el = scroller.value;
+        if (el) {
+          el.style.transition = 'none';
+          el.style.transform = `translateY(${-cur.value * window.innerHeight}px)`;
+          requestAnimationFrame(() => {
+            el.style.transition = 'transform 0.9s cubic-bezier(0.76, 0, 0.24, 1)';
+          });
+        }
+      });
+    });
+
+    return {
+      scroller, cur, mob, lang, activeTab, tabs, curSkills,
+      currentExperiences, currentProjects, sections, progressPct,
+      form, sent, goTo, send, t,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
